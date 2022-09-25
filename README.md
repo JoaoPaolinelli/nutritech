@@ -1,4 +1,4 @@
-# nutritech
+# nutri_tech
 
 A new Flutter project.
 
