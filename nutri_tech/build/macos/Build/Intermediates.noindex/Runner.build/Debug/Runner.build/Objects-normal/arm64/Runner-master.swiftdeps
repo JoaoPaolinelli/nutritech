@@ -1,8 +1,0 @@
-version: "Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)"
-options: "f89d842b5a88b21757ace084d622b596d85d64e58a5be75bbefe7c72f3018a23"
-build_start_time: [1664126840, 207149028]
-build_end_time: [1664126846, 997755050]
-inputs:
-  "/Users/jean/Documents/Estudos/nutri_tech/macos/Flutter/GeneratedPluginRegistrant.swift": [1664126824, 548774003]
-  "/Users/jean/Documents/Estudos/nutri_tech/macos/Runner/AppDelegate.swift": [1663155098, 0]
-  "/Users/jean/Documents/Estudos/nutri_tech/macos/Runner/MainFlutterWindow.swift": [1663155098, 0]

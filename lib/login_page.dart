@@ -31,8 +31,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   width: 200,
                   height: 200,
-                  child: Image.network(
-                      'https://www.designevo.com/res/templates/thumb_small/hollow-and-regular-wide-font-style.webp?v=1.0.0.2'),
+                  child: Image.asset('images/logo_empresa.png'),
                 ),
                 Container(
                   height: 10,
