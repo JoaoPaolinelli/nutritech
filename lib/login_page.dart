@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:nutri_tech/database/Db.dart';
+import 'package:nutri_tech/models/User.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nutri_tech/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,8 +14,83 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email = '';
-  String password = '';
+  Future<SharedPreferences> _pref = SharedPreferences.getInstance();
+  final _formKey = GlobalKey<FormState>();
+
+  final _conEmail = TextEditingController();
+  final _conPassword = TextEditingController();
+  var db;
+
+  @override
+  void initState() {
+    super.initState();
+    db = Db();
+  }
+
+  login() async {
+    User um = User("testNome", "testemail", "123");
+    String email = _conEmail.text;
+    String pass = _conPassword.text;
+     await db.saveData(um).then((userData) {
+      print("Successfully Saved");
+    }).catchError((error) {
+      print(error);
+      print("Error: Data Save Fail");
+    });
+    if (email.isEmpty) {
+      _showDialog(context);
+    } else if (pass.isEmpty) {
+      _showDialog(context);
+    } else {
+      await db.getLoginUser(email, pass).then((userData) {
+        if (userData != null) {
+          setSP(userData).whenComplete(() {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => HomePage()),
+                (Route<dynamic> route) => false);
+          });
+        } else {
+          _showDialog(context);
+        }
+      }).catchError((error) {
+        print(error);
+        _showDialog(context);
+      });
+    }
+  }
+
+  Future setSP(User user) async {
+    final SharedPreferences sp = await _pref;
+    int id = user.user_id ?? 0;
+    String name = user.user_name ?? "test";
+    String email = user.email ?? "test";
+    String pass = user.password ?? "test";
+    sp.setInt("user_id", id);
+    sp.setString("user_name", name);
+    sp.setString("email", email);
+    sp.setString("password", pass);
+  }
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Falha ao logar!"),
+          content: new Text("Email ou senha incorretos!"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 TextField(
-                  onChanged: (text) {
-                    email = text;
-                  },
+                  controller: _conEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'E-mail',
@@ -48,9 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  onChanged: (text) {
-                    password = text;
-                  },
+                  controller: _conPassword,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -63,13 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.orange),
                   ),
-                  onPressed: () {
-                    if (email == 'aluno@pucminas.br' && password == '123') {
-                      print('correto');
-                    } else {
-                      print('login invalido');
-                    }
-                  },
+                  onPressed: login,
                   child: Text('Entrar'),
                 ),
               ],
