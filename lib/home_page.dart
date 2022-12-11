@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nutri_tech/app_controller.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:nutri_tech/database/Db.dart';
+import 'package:nutri_tech/models/User.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nutri_tech/home_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,7 +16,34 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int counter = 0;
+  Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
+  var db;
+  final _conUserId = TextEditingController();
+  final _conDelUserId = TextEditingController();
+  final _conUserName = TextEditingController();
+  final _conEmail = TextEditingController();
+  final _conPassword = TextEditingController();
+
+
+  Future<void> getUserData() async {
+    final SharedPreferences sp = await _pref;
+
+    setState(() {
+      _conUserId.text = sp.getInt("user_id").toString();
+      _conDelUserId.text = sp.getInt("user_id").toString();
+      _conUserName.text = sp.getString("user_name").toString();
+      _conEmail.text = sp.getString("email").toString();
+      _conPassword.text = sp.getString("password").toString();
+      print(_conUserName);
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+    db = Db();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +52,7 @@ class HomePageState extends State<HomePage> {
         backgroundColor: Colors.orange,
         actions: [CustomSwitch()],
       ),
+
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -36,7 +70,25 @@ class HomePageState extends State<HomePage> {
                 Container(
                   height: 500,
                   width: MediaQuery.of(context).size.width,
-                  color: Colors.black,
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextField(
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: _conEmail.text,
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText:  _conUserName.text,
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],),
                 ),
                 Container(
                   height: 500,
