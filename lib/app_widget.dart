@@ -4,6 +4,7 @@ import 'package:nutri_tech/app_controller.dart';
 import 'package:nutri_tech/home_page.dart';
 import 'package:nutri_tech/login_page.dart';
 import 'package:nutri_tech/user_list.dart';
+
 class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,8 @@ class AppWidget extends StatelessWidget {
               brightness: AppController.instance.isDarkTheme
                   ? Brightness.dark
                   : Brightness.light),
-          home: LoginPage(),
+          //home: LoginPage(),
+          home: HomePage(),
         );
       },
     );

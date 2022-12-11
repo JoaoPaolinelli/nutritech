@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     User um = User("testNome", "testemail", "123");
     String email = _conEmail.text;
     String pass = _conPassword.text;
-     await db.saveData(um).then((userData) {
+    await db.saveData(um).then((userData) {
       print("Successfully Saved");
     }).catchError((error) {
       print(error);
