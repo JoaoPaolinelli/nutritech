@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:nutri_tech/app_controller.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -15,6 +18,20 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  File? image;
+
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      print('Erro ao pegar a imagem: $e');
+    }
+  }
+
   int counter = 0;
   int currentIndex = 0;
 
@@ -96,23 +113,45 @@ class HomePageState extends State<HomePage> {
                                   border: Border.all(
                                       color: Colors.orange, width: 5),
                                 ),
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  "Foto",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                child: image == null
+                                    ? Text(
+                                        textAlign: TextAlign.center,
+                                        "Foto",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : Column(
+                                        children: [
+                                          Spacer(),
+                                          Image.file(
+                                            image!,
+                                            width: 160,
+                                            height: 160,
+                                            fit: BoxFit.cover,
+                                          )
+                                        ],
+                                      ),
                               ),
                             ),
                             SizedBox(height: 10),
-                            Text('editar perfil',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.orange,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold)),
+                            buildButton(
+                              title: 'Pick Galery',
+                              icon: Icons.image_outlined,
+                              onClicked: () => pickImage(ImageSource.gallery),
+                            ),
+                            buildButton(
+                              title: 'Take Photo',
+                              icon: Icons.image_outlined,
+                              onClicked: () => pickImage(ImageSource.camera),
+                            ),
+                            // Text('editar perfil',
+                            //     textAlign: TextAlign.center,
+                            //     style: TextStyle(
+                            //         color: Colors.orange,
+                            //         fontSize: 10,
+                            //         fontWeight: FontWeight.bold)),
                             SizedBox(height: 50),
                             Text('Olá, Nome',
                                 textAlign: TextAlign.center,
@@ -168,6 +207,28 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Widget buildButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onClicked,
+  }) =>
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size.fromHeight(40),
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          textStyle: TextStyle(fontSize: 20),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 28),
+            const SizedBox(width: 16),
+            Text(title),
+          ],
+        ),
+        onPressed: onClicked,
+      );
 }
 
 class CustomSwitch extends StatelessWidget {
