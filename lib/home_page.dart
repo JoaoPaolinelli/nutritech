@@ -125,11 +125,13 @@ class HomePageState extends State<HomePage> {
                                     : Column(
                                         children: [
                                           Spacer(),
-                                          Image.file(
-                                            image!,
-                                            width: 160,
-                                            height: 160,
-                                            fit: BoxFit.cover,
+                                          ClipOval(
+                                            child: Image.file(
+                                              image!,
+                                              width: 170,
+                                              height: 170,
+                                              fit: BoxFit.cover,
+                                            ),
                                           )
                                         ],
                                       ),
