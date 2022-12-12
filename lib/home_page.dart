@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,13 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   File? image;
 
-  Future pickImage(ImageSource source) async {
+  Future pickImage(source) async {
     try {
+      if (source == null) {
+        setState(() => this.image = null);
+        return;
+      }
+
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
@@ -94,7 +100,9 @@ class HomePageState extends State<HomePage> {
               children: [
                 Container(
                   height: 600,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width - 20,
+                  margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  color: Color.fromARGB(5, 0, 0, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,6 +110,7 @@ class HomePageState extends State<HomePage> {
                       Center(
                         child: Column(
                           children: [
+                            SizedBox(height: 50),
                             ClipOval(
                               child: Container(
                                 alignment: Alignment.center,
@@ -137,30 +146,60 @@ class HomePageState extends State<HomePage> {
                                       ),
                               ),
                             ),
-                            SizedBox(height: 10),
-                            buildButton(
-                              title: 'Pick Galery',
-                              icon: Icons.image_outlined,
-                              onClicked: () => pickImage(ImageSource.gallery),
+                            SizedBox(
+                              height: 30,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.orange,
+                                  //backgroundColor: Colors.white,
+                                  textStyle: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                onPressed: () {
+                                  Platform.isIOS
+                                      ? showCupertinoModalPopup(
+                                          context: context,
+                                          builder: buildIOSActionSheet,
+                                        )
+                                      : showModalBottomSheet(
+                                          context: context,
+                                          builder: buildAndroidActionSheet,
+                                        );
+                                },
+                                child: const Text(
+                                  'editar perfil',
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                              ),
                             ),
-                            buildButton(
-                              title: 'Take Photo',
-                              icon: Icons.image_outlined,
-                              onClicked: () => pickImage(ImageSource.camera),
-                            ),
+                            // TextButton(onPressed: onPressed, child: const Text('Text')),
+
                             // Text('editar perfil',
                             //     textAlign: TextAlign.center,
-                            //     style: TextStyle(
-                            //         color: Colors.orange,
-                            //         fontSize: 10,
-                            //         fontWeight: FontWeight.bold)),
-                            SizedBox(height: 50),
+                            // style: TextStyle(
+                            //     color: Colors.orange,
+                            //     fontSize: 10,
+                            //     fontWeight: FontWeight.bold)),
+                            // SizedBox(height: 10),
+
+                            // buildButton(
+                            //   title: 'Pick Galery',
+                            //   icon: Icons.image_outlined,
+                            //   onClicked: () => pickImage(ImageSource.gallery),
+                            // ),
+                            // buildButton(
+                            //   title: 'Take Photo',
+                            //   icon: Icons.image_outlined,
+                            //   onClicked: () => pickImage(ImageSource.camera),
+                            // ),
+                            SizedBox(height: 40),
                             Text('Olá, Nome',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    // color: Colors.black,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold)),
+                                    fontSize: 30, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
@@ -169,7 +208,8 @@ class HomePageState extends State<HomePage> {
                 ),
                 Container(
                   height: 600,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width - 20,
+                  margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                   color: Colors.blue,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -179,7 +219,8 @@ class HomePageState extends State<HomePage> {
                 ),
                 Container(
                   height: 600,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width - 20,
+                  margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                   color: Colors.red,
                 ),
               ],
@@ -210,27 +251,73 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildButton({
-    required String title,
-    required IconData icon,
-    required VoidCallback onClicked,
-  }) =>
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(40),
-          foregroundColor: Colors.black,
-          backgroundColor: Colors.white,
-          textStyle: TextStyle(fontSize: 20),
+  Widget buildAndroidActionSheet(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: Icon(Icons.delete),
+          title: Text('Apagar'),
+          onTap: () => Navigator.of(context).pop(null),
         ),
-        child: Row(
-          children: [
-            Icon(icon, size: 28),
-            const SizedBox(width: 16),
-            Text(title),
-          ],
+        ListTile(
+          leading: Icon(Icons.camera_alt),
+          title: Text('Camera'),
+          onTap: () => Navigator.of(context).pop(ImageSource.camera),
         ),
-        onPressed: onClicked,
+        ListTile(
+          leading: Icon(Icons.image),
+          title: Text('Galeria'),
+          onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+        ),
+      ],
+    );
+  }
+
+  Widget buildIOSActionSheet(BuildContext context) => CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context, pickImage(null)),
+            child: Text('Apagar', style: TextStyle(color: Colors.red)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () =>
+                Navigator.pop(context, pickImage(ImageSource.camera)),
+            child: Text('Tirar Foto'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () =>
+                Navigator.pop(context, pickImage(ImageSource.gallery)),
+            child: Text('Escolher Foto'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Cancelar'),
+          onPressed: () => Navigator.pop(context),
+        ), // CupertinoActionSheetAction
       );
+
+//   Widget buildButton({
+//     required String title,
+//     required IconData icon,
+//     required VoidCallback onClicked,
+//   }) =>
+//       ElevatedButton(
+//         style: ElevatedButton.styleFrom(
+//           minimumSize: Size.fromHeight(40),
+//           foregroundColor: Colors.black,
+//           backgroundColor: Colors.white,
+//           textStyle: TextStyle(fontSize: 20),
+//         ),
+//         child: Row(
+//           children: [
+//             Icon(icon, size: 28),
+//             const SizedBox(width: 16),
+//             Text(title),
+//           ],
+//         ),
+//         onPressed: onClicked,
+//       );
 }
 
 class CustomSwitch extends StatelessWidget {

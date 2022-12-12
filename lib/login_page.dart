@@ -132,9 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 15),
                 TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.orange),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.orange,
                   ),
                   onPressed: login,
                   child: Text('Entrar'),
