@@ -10,7 +10,7 @@ import 'package:nutri_tech/database/Db.dart';
 import 'package:nutri_tech/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutri_tech/home_page.dart';
-
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,21 +26,11 @@ class HomePageState extends State<HomePage> {
   late PageController controller;
   ValueNotifier<int> page = ValueNotifier(0);
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   controller = PageController(initialPage: 0);
-  // }
-
   @override
   void dispose() {
     page.dispose();
     controller.dispose();
     super.dispose();
-  }
-
-  updatePage(int newPage) {
-    page.value = newPage;
   }
 
   changePage(int newPage) {
@@ -121,7 +111,11 @@ class HomePageState extends State<HomePage> {
         // physics: PageScrollPhysics(),
         // scrollDirection: Axis.horizontal,
         controller: controller,
-        onPageChanged: updatePage,
+        onPageChanged: (page) {
+          setState(() {
+            currentIndex = page;
+          });
+        },
         children: [
           Container(
             height: 600,
@@ -214,81 +208,62 @@ class HomePageState extends State<HomePage> {
             height: 600,
             width: MediaQuery.of(context).size.width - 20,
             margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            color: Colors.blue,
+            // color: Colors.blue,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [],
+              children: [
+                Text(
+                  'Tela Criar Receita',
+                  style: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                )
+              ],
             ),
           ),
           Container(
             height: 600,
             width: MediaQuery.of(context).size.width - 20,
             margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            color: Colors.red,
+            // color: Colors.red,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [],
+              children: [
+                Text(
+                  'Tela Listagem de Clientes',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                )
+              ],
             ),
           ),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   elevation: 0.0,
-      //   selectedItemColor: Colors.orange,
-      //   currentIndex: currentIndex,
-      //   onTap: (index) => setState(() => currentIndex = index),
-      //   items: [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Perfil',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.flatware_outlined),
-      //       label: 'Criar Receita',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.format_list_numbered),
-      //       label: 'Clientes',
-      //     ),
-      //   ],
-      // ),
-      bottomNavigationBar: ValueListenableBuilder<int>(
-          valueListenable: page,
-          builder: (context, paginaAtual, _) {
-            return NavigationBar(
-              backgroundColor: Colors.transparent,
-              onDestinationSelected: (value) => changePage(value),
-              selectedIndex: paginaAtual,
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.person),
-                  label: 'Perfil',
-                  selectedIcon: Icon(
-                    Icons.person,
-                    color: Colors.orange,
-                  ),
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.flatware_outlined),
-                  label: 'Criar Receita',
-                  selectedIcon: Icon(
-                    Icons.flatware_outlined,
-                    color: Colors.orange,
-                  ),
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.format_list_numbered),
-                  label: 'Clientes',
-                  selectedIcon: Icon(
-                    Icons.format_list_numbered,
-                    color: Colors.orange,
-                  ),
-                ),
-              ],
-            );
-          }),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 0.0,
+        // unselectedItemColor: Colors.grey[500],
+        selectedItemColor: Colors.orange,
+        currentIndex: currentIndex,
+        onTap: (index) => setState(() => {
+              currentIndex = index,
+              changePage(index),
+            }),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.flatware_outlined),
+            label: 'Criar Receita',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_numbered),
+            label: 'Clientes',
+          ),
+        ],
+      ),
     );
   }
 
@@ -299,17 +274,17 @@ class HomePageState extends State<HomePage> {
         ListTile(
           leading: Icon(Icons.delete),
           title: Text('Apagar'),
-          onTap: () => Navigator.of(context).pop(null),
+          onTap: () => Navigator.pop(context, pickImage(null)),
         ),
         ListTile(
           leading: Icon(Icons.camera_alt),
           title: Text('Camera'),
-          onTap: () => Navigator.of(context).pop(ImageSource.camera),
+          onTap: () => Navigator.pop(context, pickImage(ImageSource.camera)),
         ),
         ListTile(
           leading: Icon(Icons.image),
           title: Text('Galeria'),
-          onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+          onTap: () => Navigator.pop(context, pickImage(ImageSource.gallery)),
         ),
       ],
     );
