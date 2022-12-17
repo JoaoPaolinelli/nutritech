@@ -1,11 +1,20 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:nutri_tech/app_controller.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:nutri_tech/criarReceita_page.dart';
 import 'package:nutri_tech/database/Db.dart';
 import 'package:nutri_tech/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutri_tech/home_page.dart';
+// import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:provider/provider.dart';
+import 'criarReceita_page.dart';
+import 'perfil_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +24,27 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  late PageController controller;
+  ValueNotifier<int> page = ValueNotifier(0);
+
+  @override
+  void dispose() {
+    page.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
+  changePage(int newPage) {
+    controller.animateToPage(
+      newPage,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.ease,
+    );
+  }
+
   int counter = 0;
+  int currentIndex = 0;
+
   Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
   var db;
@@ -24,7 +53,6 @@ class HomePageState extends State<HomePage> {
   final _conUserName = TextEditingController();
   final _conEmail = TextEditingController();
   final _conPassword = TextEditingController();
-
 
   Future<void> getUserData() async {
     final SharedPreferences sp = await _pref;
@@ -38,81 +66,80 @@ class HomePageState extends State<HomePage> {
       print(_conUserName);
     });
   }
+
   @override
   void initState() {
     super.initState();
     getUserData();
     db = Db();
+    controller = PageController(initialPage: 0);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomePage'),
-        backgroundColor: Colors.orange,
+        title: Container(
+          child: Image.asset('images/logo_empresa.png'),
+          width: 60,
+          margin: const EdgeInsets.only(bottom: 5.0),
+        ),
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         actions: [CustomSwitch()],
       ),
-
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: ListView(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          scrollDirection: Axis.horizontal,
-          children: [
-            // Text('Contador: $counter'),
-            // Container(height: 10),
-            // CustomSwitch(),
-            // Container(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  height: 500,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextField(
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: _conEmail.text,
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText:  _conUserName.text,
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],),
-                ),
-                Container(
-                  height: 500,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.blue,
-                ),
-                Container(
-                  height: 500,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.red,
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.orange,
-        onPressed: () {
+      body: PageView(
+        controller: controller,
+        onPageChanged: (page) {
           setState(() {
-            counter++;
+            currentIndex = page;
           });
         },
+        children: [
+          Perfil(),
+          CriarReceita(),
+          Container(
+            height: 600,
+            width: MediaQuery.of(context).size.width - 20,
+            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+            color: Color.fromARGB(5, 0, 0, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Tela Listagem de Clientes',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 0.0,
+        // unselectedItemColor: Colors.grey[500],
+        selectedItemColor: Colors.orange,
+        currentIndex: currentIndex,
+        onTap: (index) => setState(() => {
+              currentIndex = index,
+              changePage(index),
+            }),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.flatware_outlined),
+            label: 'Criar Receita',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_numbered),
+            label: 'Clientes',
+          ),
+        ],
       ),
     );
   }
