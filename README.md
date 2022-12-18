@@ -22,11 +22,11 @@ Então a api já vai estar pronta para ser consumida dentro do projeto. Os endpo
 ## Funções utilizadas e criadas.
 
 [Food] Funcionalidade:
-# Função getAllFood(): Busca todos os alimentos disponiveis na API e os mostra na tela
+ Função getAllFood(): Busca todos os alimentos disponiveis na API e os mostra na tela
 
-# Funcao alimentoPorCategoria(id): Busca todos os alimentos de uma determinada categoria e os mostra na tela
+ Funcao alimentoPorCategoria(id): Busca todos os alimentos de uma determinada categoria e os mostra na tela
 
 [Categoria] - Funcionalidade:
-# Função fetch: Busca todas as categorias e as mostra na tela
+ Função fetch: Busca todas as categorias e as mostra na tela
 
-# Função getCategoriaX( x ): Busca uma categoria, tendo como parametro o ID da categoria.
+ Função getCategoriaX( x ): Busca uma categoria, tendo como parametro o ID da categoria.
