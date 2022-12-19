@@ -9,10 +9,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:nutri_tech/criarReceita_page.dart';
 import 'package:nutri_tech/database/Db.dart';
 import 'package:nutri_tech/models/User.dart';
-<<<<<<< HEAD
-=======
 import 'package:nutri_tech/screens/clients_screens/all_clients.dart';
->>>>>>> PauloBranch
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutri_tech/home_page.dart';
 // import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -84,8 +81,11 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Container(
-          child: Image.asset('images/logo_empresa.png'),
-          width: 60,
+          child: TextButton(
+            onPressed: null, // Colorar onPressed no lugar null
+            child: Image.asset('images/logo_empresa.png'),
+          ),
+          width: 75,
           margin: const EdgeInsets.only(bottom: 5.0),
         ),
         backgroundColor: Colors.transparent,
@@ -99,31 +99,7 @@ class HomePageState extends State<HomePage> {
             currentIndex = page;
           });
         },
-        children: [
-          Perfil(),
-          CriarReceita(),
-<<<<<<< HEAD
-          Container(
-            height: 600,
-            width: MediaQuery.of(context).size.width - 20,
-            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            color: Color.fromARGB(5, 0, 0, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Tela Listagem de Clientes',
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
-=======
-          AllClients()
->>>>>>> PauloBranch
-        ],
+        children: [Perfil(), CriarReceita(), AllClients()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 0.0,
