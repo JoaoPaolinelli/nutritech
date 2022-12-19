@@ -9,6 +9,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:nutri_tech/criarReceita_page.dart';
 import 'package:nutri_tech/database/Db.dart';
 import 'package:nutri_tech/models/User.dart';
+<<<<<<< HEAD
+=======
+import 'package:nutri_tech/screens/clients_screens/all_clients.dart';
+>>>>>>> PauloBranch
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutri_tech/home_page.dart';
 // import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -98,6 +102,7 @@ class HomePageState extends State<HomePage> {
         children: [
           Perfil(),
           CriarReceita(),
+<<<<<<< HEAD
           Container(
             height: 600,
             width: MediaQuery.of(context).size.width - 20,
@@ -115,6 +120,9 @@ class HomePageState extends State<HomePage> {
               ],
             ),
           ),
+=======
+          AllClients()
+>>>>>>> PauloBranch
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
