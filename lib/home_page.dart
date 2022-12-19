@@ -13,9 +13,11 @@ import 'package:nutri_tech/home_page.dart';
 import 'package:provider/provider.dart';
 import 'criarReceita_page.dart';
 import 'perfil_page.dart';
+import 'package:nutri_tech/telaCliente_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nutri_tech/auth.dart';
 import 'package:nutri_tech/registration_page.dart';
+import 'package:nutri_tech/screens/clients_screens/all_clients.dart';
 
 // import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -107,23 +109,7 @@ class HomePageState extends State<HomePage> {
         children: [
           Perfil(),
           CriarReceita(),
-          Container(
-            height: 600,
-            width: MediaQuery.of(context).size.width - 20,
-            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            color: Color.fromARGB(5, 0, 0, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Tela Listagem de Clientes',
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
+          AllClients(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
