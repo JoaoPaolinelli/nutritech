@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "49335836437",
+    "project_id": "nutritech-d3a8e",
+    "storage_bucket": "nutritech-d3a8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49335836437:android:d2b31c93476cdea460531c",
+        "android_client_info": {
+          "package_name": "com.example.nutri_tech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49335836437-akeo5vq2f7ormn9980spugalsfsngmrh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANyRWM3pl-dbtH_2srwDbdCvKo4k0F5j4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49335836437-akeo5vq2f7ormn9980spugalsfsngmrh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
